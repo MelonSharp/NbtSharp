@@ -1,19 +1,21 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/vcdkhya4u6h26qr2/branch/master?svg=true)](https://ci.appveyor.com/project/fragmer/fnbt/branch/master)
+# NbtSharp
+A .NET Standard 2.0 NBT (de)serialization library written in C#, based on [fNbt](https://github.com/mstefarov/fNbt) by [Matvei Stefarov](https://github.com/mstefarov).
 
-[Named Binary Tag (NBT)](https://minecraft.gamepedia.com/NBT_format) is a structured binary file format used by Minecraft.
-fNbt is a small library, written in C# for .NET 3.5+. It provides functionality
-to create, load, traverse, modify, and save NBT files and streams.
+[![Build status](https://img.shields.io/github/workflow/status/MelonSharp/fNbt/.NET)](https://github.com/MelonSharp/fNbt/actions/workflows/dotnet.yml)
+![Repo size](https://img.shields.io/github/languages/code-size/MelonSharp/fNbt)
+![GitHub](https://img.shields.io/github/license/MelonSharp/fNbt)
 
-Current released version is 0.6.4 (6 July 2018).
+---
 
-fNbt is based in part on Erik Davidson's (aphistic's) original LibNbt library,
-now completely rewritten by Matvei Stefarov (fragmer).
+## Overview
+[Named Binary Tag (NBT)](https://minecraft.gamepedia.com/NBT_format) is a structured binary file format developed by Mojang and used throughout Minecraft.
 
-Note that fNbt.Test.dll and nunit.framework.dll do NOT need to be bundled with
-applications that use fNbt; they are only used for testing.
+NbtSharp is a .NET Standard 2.0 library providing functionality to create, load, traverse, modify, and save NBT files and streams. It is based on [fNbt](https://github.com/mstefarov/fNbt) by [Matvei Stefarov](https://github.com/mstefarov), which itself is based on [LibNbt](https://github.com/aphistic/libnbt) by [Kristin Davidson (aphistic)](https://github.com/aphistic).
 
+## Why not .NET 5?
+.NET Standard 2.0 offers support for many more environments (including .NET 5 environments), such as for use with the Unity 3D engine, which does not yet support .NET 5.
 
-## FEATURES
+## Features
 - Load and save uncompressed, GZip-, and ZLib-compressed files/streams.
 - Easily create, traverse, and modify NBT documents.
 - Simple indexer-based syntax for accessing compound, list, and nested tags.
@@ -25,117 +27,15 @@ applications that use fNbt; they are only used for testing.
 - Can work with both big-endian and little-endian NBT data and systems.
 - Optional high-performance reader/writer for working with streams directly.
 
+## Examples
+Coming soon
 
-## DOWNLOAD
-Latest version of fNbt requires .NET Framework 3.5+ (client or full profile).
+## Contributing
+Contributions will be welcome in the near future. Please do not open a pull request at this time, it will be ignored. For issues with existing functionality, open an issue on the [fNbt issue tracker](https://github.com/mstefarov/fNbt/issues).
 
-- **Package @ NuGet:**  https://www.nuget.org/packages/fNbt/
+## License
+NbtSharp is licensed under 3-Clause BSD; see [LICENSE.md](LICENSE.md) for more details.
 
-- **Compiled binary:**  https://fcraft.net/fnbt/fNbt_v0.6.4.zip
-    <br><sup>SHA1: 600853530fd538e614b6cb4722ced81917e9615d</sup>
+fNbt is licensed under 3-Clause BSD; see [its LICENSE](https://github.com/MelonSharp/fNbt/blob/master/docs/LICENSE) for more details.
 
-- **Amalgamation** (single source file):
-    * Non-annotated: https://fcraft.net/fnbt/fNbt_v0.6.4.cs
-	    <br><sup>SHA1: 9298dbe00d080bcf5d32299415aaf856590ba3bf</sup>
-    * Annotated (using [JetBrains.Annotations](https://blog.jetbrains.com/dotnet/2018/05/03/what-are-jetbrains-annotations/)):
-	    https://fcraft.net/fnbt/fNbt_v0.6.4_Annotated.cs
-		<br><sup>SHA1: ae096d83b57bf59c708ad66168d45c1ea9b58175</sup>
-
-
-## EXAMPLES
-#### Loading a gzipped file
-```cs
-    var myFile = new NbtFile();
-    myFile.LoadFromFile("somefile.nbt.gz");
-    var myCompoundTag = myFile.RootTag;
-```
-
-#### Accessing tags (long/strongly-typed style)
-```cs
-    int intVal = myCompoundTag.Get<NbtInt>("intTagsName").Value;
-    string listItem = myStringList.Get<NbtString>(0).Value;
-    byte nestedVal = myCompTag.Get<NbtCompound>("nestedTag")
-                              .Get<NbtByte>("someByteTag")
-                              .Value;
-```
-
-#### Accessing tags (shortcut style)
-```cs
-    int intVal = myCompoundTag["intTagsName"].IntValue;
-    string listItem = myStringList[0].StringValue;
-    byte nestedVal = myCompTag["nestedTag"]["someByteTag"].ByteValue;
-```
-
-#### Iterating over all tags in a compound/list
-```cs
-    foreach( NbtTag tag in myCompoundTag.Values ){
-        Console.WriteLine( tag.Name + " = " + tag.TagType );
-    }
-    foreach( string tagName in myCompoundTag.Names ){
-        Console.WriteLine( tagName );
-    }
-    for( int i = 0; i < myListTag.Count; i++ ){
-        Console.WriteLine( myListTag[i] );
-    }
-    foreach( NbtInt intItem in myIntList.ToArray<NbtInt>() ){
-        Console.WriteLine( intItem.Value );
-    }
-```
-
-#### Constructing a new document
-```cs
-    var serverInfo = new NbtCompound("Server");
-    serverInfo.Add( new NbtString("Name", "BestServerEver") );
-    serverInfo.Add( new NbtInt("Players", 15) );
-    serverInfo.Add( new NbtInt("MaxPlayers", 20) );
-    var serverFile = new NbtFile(serverInfo);
-    serverFile.SaveToFile( "server.nbt", NbtCompression.None );
-```
-
-#### Constructing using collection initializer notation
-```cs
-    var compound = new NbtCompound("root"){
-        new NbtInt("someInt", 123),
-        new NbtList("byteList") {
-            new NbtByte(1),
-            new NbtByte(2),
-            new NbtByte(3)
-        },
-        new NbtCompound("nestedCompound") {
-            new NbtDouble("pi", 3.14)
-        }
-    };
-```
-
-#### Pretty-printing file structure
-```cs
-    Console.WriteLine( myFile.ToString("\t") ); // tabs
-    Console.WriteLine( myRandomTag.ToString("    ") ); // spaces
-```
-
-#### Check out unit tests in fNbt.Test for more examples.
-
-
-## API REFERENCE
-Online reference can be found at http://www.fcraft.net/fnbt/v0.6.4/
-
-
-## LICENSING
-fNbt v0.5.0+ is licensed under 3-Clause BSD license;
-see [docs/LICENSE](docs/LICENSE).
-LibNbt2012 up to and including v0.4.1 kept LibNbt's original license (LGPLv3).
-
-
-## VERSION HISTORY
-See [docs/Changelog.md](docs/Changelog.md)
-
-
-## OLD VERSIONS
-If you need .NET 2.0 support, stick to using fNbt version 0.5.1.
-Note that this 0.5.x branch of fNbt is no longer supported or updated.
-
-- **Compiled binary:**  https://fcraft.net/fnbt/fNbt_v0.5.1.zip
-
-- **Amalgamation** (single source file):
-    - Non-annotated: https://fcraft.net/fnbt/fNbt_v0.5.1.cs
-    - Annotated: https://fcraft.net/fnbt/fNbt_v0.5.1_Annotated.cs
+LibNbt is licensed under GNU GPL v3; see [its LICENSE](https://github.com/aphistic/libnbt/blob/master/docs/LICENSE) for more details.
