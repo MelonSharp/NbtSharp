@@ -3,7 +3,7 @@ A .NET Standard 2.0 NBT (de)serialization library written in C#, based on [fNbt]
 
 [![Build status](https://img.shields.io/github/workflow/status/MelonSharp/fNbt/.NET)](https://github.com/MelonSharp/fNbt/actions/workflows/dotnet.yml)
 ![Repo size](https://img.shields.io/github/languages/code-size/MelonSharp/fNbt)
-![GitHub](https://img.shields.io/github/license/MelonSharp/fNbt)
+[![License](https://img.shields.io/github/license/MelonSharp/fNbt)](https://github.com/MelonSharp/NbtSharp/blob/master/LICENSE.md)
 
 ---
 
